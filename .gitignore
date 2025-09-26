@@ -1,0 +1,5 @@
+venv
+.env
+credentials.json
+savingotps-firebase-adminsdk-fbsvc-6175414d56.json
+token.json
