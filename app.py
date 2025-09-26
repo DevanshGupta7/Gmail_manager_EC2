@@ -259,7 +259,7 @@ def add_appropriate_label_to_email(email_id, label_id):
         logger.error(f"Error exception: {error}")
         return {"error": str(error)}
     
-    
+
 def extract_text_html(part):
     temp_text_content = ""
     temp_html_content = ""
