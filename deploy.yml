@@ -1,0 +1,52 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_EC2_USER: ubuntu
+  AWS_EC2_HOST: 43.204.235.141
+  MONGODB_URI: ${{secrets.MONGODB_URI}}
+  GROQ_API_KEY: ${{secrets.GROQ_API_KEY}}
+  FIREBASE_URL: ${{secrets.FIREBASE_URL}}
+  FIREBASE_CERTIFICATE: ${{secrets.FIREBASE_CERTIFICATE}}
+  GMAIL_ATTACHMENT_FOLDER_ID: ${{secrets.GMAIL_ATTACHMENT_FOLDER_ID}}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: make .env
+        run: |
+            echo "MONGODB_URI=${{env.MONGODB_URI}}" >> .env
+            echo "GROQ_API_KEY=${{env.GROQ_API_KEY}}" >> .env
+            echo "FIREBASE_URL=${{env.FIREBASE_URL}}" >> .env
+            echo "FIREBASE_CERTIFICATE=${{env.FIREBASE_CERTIFICATE}}" >> .env
+            echo "GMAIL_ATTACHMENT_FOLDER_ID=${{env.GMAIL_ATTACHMENT_FOLDER_ID}}" >> .env
+
+      - name: Create SSH key file from Github secret
+        run: |
+            mkdir -p ~/.ssh
+            echo "${{secrets.EC2_SECRET}}" > ~/.ssh/key.pem
+            chmod 600 ~/.ssh/key.pem
+            if [ -z "$(cat ~/.ssh/key.pem)"]; then
+              echo "ERROR: SSH Key secret is empty"
+              exit 1
+            fi
+
+      - name: Add EC2 to known_hosts
+        run: ssh-keyscan -H ${{env.AWS_EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Zip the entire project directory including .env
+        run: zip -r project-main.zip ./*
+
+      - name: Delete existing build files
+        run: |
+            ssh -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}} << 'ENDSSH'
+            cd ~/
+            sudo rm -rf 

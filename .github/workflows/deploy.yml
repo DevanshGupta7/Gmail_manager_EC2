@@ -1,25 +1,26 @@
-name: Deploy to AWS EC2
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main
-
-env:
-  AWS_EC2_USER: ubuntu
-  AWS_EC2_HOST: 43.204.235.141
-  MONGODB_URI: ${{secrets.MONGODB_URI}}
-  GROQ_API_KEY: ${{secrets.GROQ_API_KEY}}
-  FIREBASE_URL: ${{secrets.FIREBASE_URL}}
-  FIREBASE_CERTIFICATE: ${{secrets.FIREBASE_CERTIFICATE}}
-  GMAIL_ATTACHMENT_FOLDER_ID: ${{secrets.GMAIL_ATTACHMENT_FOLDER_ID}}
+      - development
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: make .env
-        run: 
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 43.204.235.141
+          username: ubuntu
+          key: ${{ secrets.EC2_SECRET }}
+          script: |
+            cd /home/ubuntu/your-repo
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl restart myapp
