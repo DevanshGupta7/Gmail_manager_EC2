@@ -1,0 +1,9 @@
+Create venv
+Install all packages from requirements.txt in venv
+Create github repo
+add all env to github in temp
+install all packages in ubuntu
+create zip file of venv
+create new pm and add to it
+delete previous pm
+then run it
