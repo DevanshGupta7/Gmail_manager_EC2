@@ -13,6 +13,8 @@ env:
   FIREBASE_URL: ${{secrets.FIREBASE_URL}}
   FIREBASE_CERTIFICATE: ${{secrets.FIREBASE_CERTIFICATE}}
   GMAIL_ATTACHMENT_FOLDER_ID: ${{secrets.GMAIL_ATTACHMENT_FOLDER_ID}}
+  GOOGLE_AUTH_CREDS: ${{secrets.GOOGLE_AUTH_CREDS}}
+  
 
 jobs:
   deploy:
@@ -28,6 +30,7 @@ jobs:
             echo "FIREBASE_URL=${{env.FIREBASE_URL}}" >> .env
             echo "FIREBASE_CERTIFICATE=${{env.FIREBASE_CERTIFICATE}}" >> .env
             echo "GMAIL_ATTACHMENT_FOLDER_ID=${{env.GMAIL_ATTACHMENT_FOLDER_ID}}" >> .env
+            echo "GOOGLE_AUTH_CREDS=${{env.GOOGLE_AUTH_CREDS}}" >> .env
 
       - name: Create SSH key file from Github secret
         run: |
