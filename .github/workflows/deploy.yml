@@ -61,8 +61,10 @@ jobs:
 
       - name: Create venv
         run: |
+            ssh -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}} << 'ENDSSH'
             cd ~/gmail_manager_main
             python -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
+            ENDSSH
