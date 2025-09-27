@@ -57,4 +57,4 @@ jobs:
             ENDSSH
 
       - name: Copy project zip to EC2 instance
-        run: sudo scp -i `/.ssh/key.pem -o "StrictHostKeyChecking=no" -v .env project-main.zip ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}}:~/gmail_manager_main/
+        run: sudo scp -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" -v .env project-main.zip ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}}:~/gmail_manager_main/
