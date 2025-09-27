@@ -31,11 +31,6 @@ jobs:
             echo "GMAIL_ATTACHMENT_FOLDER_ID=${{env.GMAIL_ATTACHMENT_FOLDER_ID}}" >> .env
             echo "GOOGLE_AUTH_CREDS=${{env.GOOGLE_AUTH_CREDS}}" >> .env
 
-      - name: Debug SSH key file
-        run: |
-            file ~/.ssh/key.pem
-            head -5 ~/.ssh/key.pem
-
       - name: Create SSH key file from Github secret
         run: |
             mkdir -p ~/.ssh
@@ -45,6 +40,11 @@ jobs:
               echo "ERROR: SSH Key secret is empty"
               exit 1
             fi
+
+      - name: Debug SSH key file
+        run: |
+            file ~/.ssh/key.pem
+            head -5 ~/.ssh/key.pem
 
       - name: Add EC2 to known_hosts
         run: ssh-keyscan -H ${{env.AWS_EC2_HOST}} >> ~/.ssh/known_hosts
