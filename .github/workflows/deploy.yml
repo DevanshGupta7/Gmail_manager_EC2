@@ -44,6 +44,13 @@ jobs:
       - name: Add EC2 to known_hosts
         run: ssh-keyscan -H ${{env.AWS_EC2_HOST}} >> ~/.ssh/known_hosts
 
+      - name: Create venv and install dependencies
+        run: |
+            python -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
       - name: Zip the entire project directory including .env
         run: zip -r project-main.zip ./*
 
@@ -64,18 +71,14 @@ jobs:
             ssh -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}} << 'ENDSSH'
             cd ~/gmail_manager_main
             unzip -o project-main.zip
-            python -m venv venv
-            source venv/bin/activate
-            pip install --upgrade pip
-            pip install -r requirements.txt
             sudo rm project-main.zip
-            pm2 delete gmail_manager_app
+            pm2 delete gmail_manager_app || true
             sudo rm -rf /var/www/gmail_manager_main/
             sudo mkdir -p /var/www/gmail_manager_main/
             sudo cp -r ./* .env /var/www/gmail_manager_main/
             sudo rm -rf ~/gmail_manager_main
             cd /var/www/gmail_manager_main
             pm2 start "/var/www/gmail_manager_main/venv/bin/waitress-serve --host=0.0.0.0 --port=5000 app:app" --name gmail_manager_app
-            pm2 save
+            pm2 save || true
             exit
             ENDSSH
