@@ -34,7 +34,7 @@ jobs:
       - name: Create SSH key file from Github secret
         run: |
             mkdir -p ~/.ssh
-            echo "${{secrets.EC2_SECRET}}" > ~/.ssh/key.pem
+            echo "${{secrets.EC2_SECRET_KEY}}" > ~/.ssh/key.pem
             chmod 600 ~/.ssh/key.pem
             if [ -z "$(cat ~/.ssh/key.pem)" ]; then
               echo "ERROR: SSH Key secret is empty"
