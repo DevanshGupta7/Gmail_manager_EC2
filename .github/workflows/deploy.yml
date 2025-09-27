@@ -58,3 +58,11 @@ jobs:
 
       - name: Copy project zip to EC2 instance
         run: sudo scp -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" -v .env project-main.zip ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}}:~/gmail_manager_main/
+
+      - name: Create venv
+        run: |
+            cd ~/gmail_manager_main
+            python -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
