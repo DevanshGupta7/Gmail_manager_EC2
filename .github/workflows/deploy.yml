@@ -31,10 +31,15 @@ jobs:
             echo "GMAIL_ATTACHMENT_FOLDER_ID=${{env.GMAIL_ATTACHMENT_FOLDER_ID}}" >> .env
             echo "GOOGLE_AUTH_CREDS=${{env.GOOGLE_AUTH_CREDS}}" >> .env
 
+      - name: Debug SSH key file
+        run: |
+            file ~/.ssh/key.pem
+            head -5 ~/.ssh/key.pem
+
       - name: Create SSH key file from Github secret
         run: |
             mkdir -p ~/.ssh
-            echo "${{secrets.EC2_SECRET_KEY}}" > ~/.ssh/key.pem
+            echo "${{secrets.EC2_SECRET_KEY}}" | tr -d '\r' > ~/.ssh/key.pem
             chmod 600 ~/.ssh/key.pem
             if [ -z "$(cat ~/.ssh/key.pem)" ]; then
               echo "ERROR: SSH Key secret is empty"
