@@ -47,8 +47,11 @@ jobs:
       - name: Zip the entire project directory including .env
         run: zip -r project-main.zip ./*
 
-      # - name: Delete existing build files
-      #   run: |
-      #       ssh -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}} << 'ENDSSH'
-      #       cd ~/
-      #       sudo rm -rf 
+      - name: Delete existing build files
+        run: |
+            ssh -i ~/.ssh/key.pem -o "StrictHostKeyChecking=no" ${{env.AWS_EC2_USER}}@${{env.AWS_EC2_HOST}} << 'ENDSSH'
+            cd ~/
+            sudo rm -rf gmail_manager_main
+            sudo mkdir gmail_manager_main
+            sudo chown ubuntu:ubuntu gmail_manager_main
+            ENDSSH
