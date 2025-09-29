@@ -48,7 +48,9 @@ user_labels = {"Bills & Payments": "Label_2",
                "Other": "Label_11",
                "Important": "IMPORTANT"}
 
+print("gmail authenticating")
 creds = authenticate_gmail()
+print("gmail authenticated")
 service = build("gmail", "v1", credentials=creds)
 drive_service = build("drive", "v3", credentials=creds)
 
@@ -56,6 +58,7 @@ firebase_creds = credentials.Certificate(json.loads(FIREBASE_CERTIFICATE))
 firebase_admin.initialize_app(firebase_creds, {
     "databaseURL": FIREBASE_URL
 })
+print("firebase authenticated")
 
 fields = "id, labelIds, snippet, payload/mimeType, payload/headers, payload/body, payload(parts(mimeType,filename,body(data,attachmentId),parts)), internalDate"
 
