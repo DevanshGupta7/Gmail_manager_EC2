@@ -52,7 +52,7 @@ creds = authenticate_gmail()
 service = build("gmail", "v1", credentials=creds)
 drive_service = build("drive", "v3", credentials=creds)
 
-firebase_creds = credentials.Certificate(FIREBASE_CERTIFICATE)
+firebase_creds = credentials.Certificate(json.loads(FIREBASE_CERTIFICATE))
 firebase_admin.initialize_app(firebase_creds, {
     "databaseURL": FIREBASE_URL
 })
