@@ -49,8 +49,11 @@ user_labels = {"Bills & Payments": "Label_2",
                "Important": "IMPORTANT"}
 
 print("gmail authenticating")
-creds = authenticate_gmail()
-print("gmail authenticated")
+try:
+    creds = authenticate_gmail()
+    print("gmail authenticated")
+except Exception as e:
+    print(f"An error occured in authenticating gmail: {e}")
 service = build("gmail", "v1", credentials=creds)
 drive_service = build("drive", "v3", credentials=creds)
 
