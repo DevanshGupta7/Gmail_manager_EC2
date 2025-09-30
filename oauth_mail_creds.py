@@ -17,8 +17,7 @@ def authenticate_gmail():
     SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/drive"]
 
     if os.path.exists(token_file):
-        with open(token_file, "r") as token:
-            creds = Credentials.from_authorized_user_file(token, SCOPES)
+        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
     
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -32,5 +31,3 @@ def authenticate_gmail():
     print(f"Creds: {creds}")
 
     return creds
-
-authenticate_gmail()
