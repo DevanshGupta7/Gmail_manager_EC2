@@ -353,17 +353,23 @@
 
 # print(base64.urlsafe_b64decode("VGVzdCBtZXNzYWdl").decode("utf-8"))
 
-from googleapiclient.discovery import build
-from oauth_mail_creds import authenticate_gmail
+# from googleapiclient.discovery import build
+# from oauth_mail_creds import authenticate_gmail
 
-def get_latest_history_id():
-    creds = authenticate_gmail()
-    service = build("gmail", "v1", credentials=creds)
+# def get_latest_history_id():
+#     creds = authenticate_gmail()
+#     service = build("gmail", "v1", credentials=creds)
 
-    profile = service.users().getProfile(userId="me").execute()
-    history_id = profile.get("historyId")
-    print("Latest historyId:", history_id)
-    return history_id
+#     profile = service.users().getProfile(userId="me").execute()
+#     history_id = profile.get("historyId")
+#     print("Latest historyId:", history_id)
+#     return history_id
 
-# Run this once before setting up Gmail watch
-latest_id = get_latest_history_id()
+# # Run this once before setting up Gmail watch
+# latest_id = get_latest_history_id()
+
+import json
+import pickle
+
+with open("token.json", "r") as token_file:
+    print(json.load(token_file))
