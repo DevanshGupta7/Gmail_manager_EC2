@@ -54,16 +54,20 @@ try:
     print("gmail authenticated")
 except Exception as e:
     print(f"An error occured in authenticating gmail: {e}")
-service = build("gmail", "v1", credentials=creds)
-drive_service = build("drive", "v3", credentials=creds)
 
-firebase_creds = credentials.Certificate(json.loads(FIREBASE_CERTIFICATE))
-firebase_admin.initialize_app(firebase_creds, {
-    "databaseURL": FIREBASE_URL
-})
-print("firebase authenticated")
+try:
+    service = build("gmail", "v1", credentials=creds)
+    drive_service = build("drive", "v3", credentials=creds)
 
-fields = "id, labelIds, snippet, payload/mimeType, payload/headers, payload/body, payload(parts(mimeType,filename,body(data,attachmentId),parts)), internalDate"
+    firebase_creds = credentials.Certificate(json.loads(FIREBASE_CERTIFICATE))
+    firebase_admin.initialize_app(firebase_creds, {
+        "databaseURL": FIREBASE_URL
+    })
+    print("firebase authenticated")
+
+    fields = "id, labelIds, snippet, payload/mimeType, payload/headers, payload/body, payload(parts(mimeType,filename,body(data,attachmentId),parts)), internalDate"
+except Exception as e:
+    print(f"An error occured in starting: {e}")
 
 
 def get_db_emails():
