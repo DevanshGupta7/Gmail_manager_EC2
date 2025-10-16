@@ -422,6 +422,8 @@ def get_new_emails(history_id):
             
         response = service.users().history().list(userId="me", startHistoryId=last_history_id).execute()
         logger.debug(f"Response in get_new_emails: {response}")
+
+        success = True
         
         if "history" in response:
             logger.debug("Yes history in response")
@@ -438,7 +440,12 @@ def get_new_emails(history_id):
                             email_data = get_fetch_email_with_content(msg_id)
                             logger.debug(f"full msg in messagesAdded: {email_data}")
                             emails.append(email_data)
-                            
+
+                            if isinstance(email_data, dict) and "error" in email_data:
+                                logger.error(f"Failed to fetch email {msg_id}, skipping history update")
+                                success = False
+                                continue
+                             
                             with app.app_context():
                                 logger.info("adding to all_emails database")
                                 if "UNREAD" not in email_data.get("labelIds", []):
@@ -481,6 +488,11 @@ def get_new_emails(history_id):
                             
                             fetch_label_id = emails_db.all_emails.find_one({"email_id": msg_id},
                                                                            {"full_email.labelIds": 1, "_id": 0})
+
+                            if isinstance(full_msg, dict) and "error" in full_msg:
+                                logger.error(f"Failed to fetch email {msg_id}, skipping history update")
+                                success = False
+                                continue
                             
                             if "UNREAD" in labelIds:
                                 existing_labels = fetch_label_id.get("full_email", {}).get("labelIds", [])
@@ -526,6 +538,11 @@ def get_new_emails(history_id):
                             
                             fetch_label_id = emails_db.all_emails.find_one({"email_id": msg_id},
                                                                            {"full_email.labelIds": 1, "_id": 0})
+
+                            if isinstance(full_msg, dict) and "error" in full_msg:
+                                logger.error(f"Failed to fetch email {msg_id}, skipping history update")
+                                success = False
+                                continue
                             
                             if "UNREAD" in labelIds:
                                 existing_labels = fetch_label_id.get("full_email", {}).get("labelIds", [])
@@ -564,11 +581,13 @@ def get_new_emails(history_id):
                 except Exception as error:
                     logger.error(f"Error in fetching emails from history list. Continuing to next email. {error}")
                             
-            latest_history_id = response.get("historyId")
+            latest_history_id = response.get("historyId") or last_history_id
             if latest_history_id:
                 with app.app_context():
                     emails_db.history.update_one({"_id": "latest"}, {"$set": {"historyId": latest_history_id}}, upsert=True)
-                            
+            if not success:
+                logger.warning("Some emails failed, logged for retry, but historyId still advanced.")
+                                
             return emails
         
         else:
